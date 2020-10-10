@@ -1,0 +1,7 @@
+.BaseTable__row.blue-row {
+	background-color: #f6f8fa;
+}
+
+.BaseTable__row.blue-row:hover {
+	background-color: #f3f3f3;
+}
