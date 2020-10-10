@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import BaseTable from 'react-base-table';
 import { defaultSorter } from 'utils';
 import 'react-base-table/styles.css';
@@ -8,12 +8,7 @@ const Table = ({ data, columns, defaultSort = {}, customSorters = [] }) => {
 	const [stateData, setStateData] = useState(data);
 	const [sortBy, setSortBy] = useState(defaultSort);
 
-	// sort data on render
-	useEffect(() => {
-		onColumnSort({ key: defaultSort.key, order: defaultSort.order });
-	}, []);
-
-	const onColumnSort = ({ key, order }) => {
+	const onColumnSort = useCallback(({ key, order }) => {
 		const customSort = customSorters.find(sort => sort.id === key);
 		setSortBy({ key, order });
 
@@ -23,7 +18,12 @@ const Table = ({ data, columns, defaultSort = {}, customSorters = [] }) => {
 		} else {
 			setStateData(stateData.sort((a, b) => defaultSorter(a, b, order, key)));
 		}
-	}
+	}, [customSorters, stateData]);
+
+	// sort data on render
+	useEffect(() => {
+		onColumnSort({ key: defaultSort.key, order: defaultSort.order });
+	}, [defaultSort.key, defaultSort.order, onColumnSort]);
 
 	return (
 		<BaseTable
